@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realizacje | Karol – Tworzenie Stron Internetowych</title>
+  <meta name="description" content="Zobacz strony internetowe wykonane przez Karola – gabinety, restauracje, usługi lokalne i więcej. Tworzenie stron Wadowice, Andrychów." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg:      #0a0a0c;
+      --bg2:     #111116;
+      --bg3:     #18181f;
+      --accent:  #f07832;
+      --accent2: #ff9a54;
+      --text:    #e8e8ee;
+      --muted:   #7a7a92;
+      --border:  rgba(255,255,255,0.06);
+      --card:    rgba(255,255,255,0.03);
+      --glow:    rgba(240,120,50,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .5;
+    }
+
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.15; }
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { position: relative; z-index: 1; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      border-radius: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      letter-spacing: .03em;
+      cursor: pointer;
+      transition: all .25s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 28px var(--glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 40px var(--glow);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .78rem; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .section-label::before {
+      content: '';
+      width: 28px; height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* ══════════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════════ */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      transition: background .35s, box-shadow .35s, padding .35s;
+      padding: 22px 0;
+    }
+    #navbar.scrolled {
+      background: rgba(10,10,12,.92);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
+      padding: 14px 0;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: .88rem; font-weight: 500; color: var(--muted);
+      transition: color .2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--text); }
+    .nav-cta { margin-left: 16px; }
+
+    .burger {
+      display: none;
+      flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .burger span {
+      width: 24px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: all .3s;
+    }
+
+    @media(max-width:768px){
+      .nav-links, .nav-cta { display: none; }
+      .burger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(10,10,12,.97);
+        padding: 32px 24px;
+        gap: 24px;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       PAGE HERO
+    ══════════════════════════════════════════ */
+    #page-hero {
+      padding: 160px 0 80px;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(240,120,50,.07) 0%, transparent 70%),
+        var(--bg);
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    #page-hero h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    #page-hero h1 span { color: var(--accent); }
+    #page-hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-pills {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(240,120,50,.08);
+      border: 1px solid rgba(240,120,50,.2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: .82rem; font-weight: 600; color: var(--accent);
+    }
+
+    /* ══════════════════════════════════════════
+       FILTER BAR
+    ══════════════════════════════════════════ */
+    #filters {
+      padding: 36px 0 0;
+      position: sticky; top: 64px; z-index: 100;
+      background: var(--bg);
+    }
+    .filter-bar {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-family: 'Syne', sans-serif;
+      font-size: .82rem; font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      transition: all .22s;
+    }
+    .filter-btn:hover {
+      border-color: rgba(240,120,50,.35);
+      color: var(--text);
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ══════════════════════════════════════════
+       PROJECTS GRID
+    ══════════════════════════════════════════ */
+    #projects {
+      padding: 56px 0 100px;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ─ single card ─ */
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: border-color .3s, transform .35s, box-shadow .35s;
+      position: relative;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      border-color: rgba(240,120,50,.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4), 0 0 0 1px rgba(240,120,50,.12);
+    }
+
+    /* image wrapper */
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg3);
+    }
+    .card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease, filter .5s ease;
+      filter: brightness(.9) saturate(.85);
+    }
+    .project-card:hover .card-img img {
+      transform: scale(1.06);
+      filter: brightness(1) saturate(1.1);
+    }
+
+    /* overlay on hover */
+    .card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,12,.85) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity .35s;
+      display: flex; align-items: flex-end; padding: 20px;
+    }
+    .project-card:hover .card-overlay { opacity: 1; }
+    .overlay-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: .82rem; font-weight: 700;
+      padding: 9px 18px;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    .overlay-link:hover { background: var(--accent2); }
+
+    /* card body */
+    .card-body {
+      padding: 22px 22px 24px;
+      flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .card-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(240,120,50,.09);
+      border: 1px solid rgba(240,120,50,.18);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: .73rem; font-weight: 600; color: var(--accent);
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+    .card-body h3 {
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0;
+      flex: 1;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .card-footer-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .82rem; font-weight: 600; color: var(--muted);
+      transition: color .2s;
+    }
+    .project-card:hover .card-footer-link { color: var(--accent); }
+    .card-arrow {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; color: var(--muted);
+      transition: all .25s;
+    }
+    .project-card:hover .card-arrow {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* hidden state for filter */
+    .project-card.hidden {
+      display: none;
+    }
+
+    @media(max-width:900px){ .projects-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:560px){ .projects-grid { grid-template-columns: 1fr; } }
+
+    /* ══════════════════════════════════════════
+       CTA BOTTOM
+    ══════════════════════════════════════════ */
+    #bottom-cta {
+      padding: 100px 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(240,120,50,.07) 0%, transparent 70%),
+        var(--bg2);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    #bottom-cta h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 18px;
+    }
+    #bottom-cta h2 span { color: var(--accent); }
+    #bottom-cta p {
+      color: var(--muted); max-width: 500px; margin: 0 auto 40px;
+    }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-wa {
+      background: #25D366; color: #fff;
+      transition: all .25s;
+    }
+    .btn-wa:hover { background: #20bb5a; transform: translateY(-2px); }
+    .btn-phone {
+      background: transparent; color: var(--text);
+      border: 1.5px solid rgba(240,120,50,.4);
+      transition: all .25s;
+    }
+    .btn-phone:hover {
+      border-color: var(--accent); color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; }
+    .footer-logo span { color: var(--accent); }
+    footer p { font-size: .82rem; color: var(--muted); }
+
+    /* ── Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .08s; }
+    .reveal-delay-2 { transition-delay: .16s; }
+    .reveal-delay-3 { transition-delay: .24s; }
+    .reveal-delay-4 { transition-delay: .32s; }
+    .reveal-delay-5 { transition-delay: .40s; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">karol<span>.</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#cases">Case studies</a></li>
+        <li><a href="index.html#offer">Oferta</a></li>
+        <li><a href="strony.html" class="active">Realizacje</a></li>
+        <li><a href="index.html#reviews">Opinie</a></li>
+      </ul>
+      <a href="tel:+48000000000" class="btn btn-primary nav-cta" style="padding:10px 22px;font-size:.85rem;">
+        <i class="fas fa-phone"></i> Zadzwoń
+      </a>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE HERO
+══════════════════════════════════════ -->
+<section id="page-hero">
+  <div class="container">
+    <div class="section-label" style="justify-content:center;">Portfolio</div>
+    <h1>Strony, które <span>wykonałem</span></h1>
+    <p>Każda z tych stron powstała z myślą o konkretnym kliencie i konkretnym celu — zdobyć więcej klientów z internetu.</p>
+    <div class="hero-pills">
+      <div class="pill"><i class="fas fa-globe"></i> 16 realizacji</div>
+      <div class="pill"><i class="fas fa-map-marker-alt"></i> Lokalne biznesy</div>
+      <div class="pill"><i class="fas fa-mobile-alt"></i> Każda responsywna</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FILTER BAR
+══════════════════════════════════════ -->
+<div id="filters">
+  <div class="container">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">Wszystkie</button>
+      <button class="filter-btn" data-filter="gabinet">Gabinety</button>
+      <button class="filter-btn" data-filter="restauracja">Gastronomia</button>
+      <button class="filter-btn" data-filter="uslugi">Usługi</button>
+      <button class="filter-btn" data-filter="motoryzacja">Motoryzacja</button>
+      <button class="filter-btn" data-filter="inne">Inne</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PROJECTS GRID
+══════════════════════════════════════ -->
+<section id="projects">
+  <div class="container">
+    <div class="projects-grid" id="projectsGrid">
+
+      <!-- 1 -->
+      <a href="https://karwyss.github.io/accessbar_" target="_blank" class="project-card reveal" data-cat="gabinet">
+        <div class="card-img">
+          <img src="accessbars_photo.png" alt="Access Bars Therapy" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-spa"></i> Gabinet</div>
+          <h3>Gabinet Access Bars Therapy</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2 -->
+      <a href="https://karwyss.github.io/theone" target="_blank" class="project-card reveal reveal-delay-1" data-cat="uslugi">
+        <div class="card-img">
+          <img src="theone.png" alt="Barbershop" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-scissors"></i> Usługi</div>
+          <h3>Barbershop</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 3 -->
+      <a href="https://karwyss.github.io/dentysta" target="_blank" class="project-card reveal reveal-delay-2" data-cat="gabinet">
+        <div class="card-img">
+          <img src="dentysta.png" alt="Gabinet stomatologiczny" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-tooth"></i> Gabinet</div>
+          <h3>Gabinet stomatologiczny</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 4 -->
+      <a href="https://karwyss.github.io/zachcianka" target="_blank" class="project-card reveal" data-cat="restauracja">
+        <div class="card-img">
+          <img src="zachciankaa.png" alt="Restauracja Zachcianka" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-utensils"></i> Gastronomia</div>
+          <h3>Restauracja Zachcianka</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 5 -->
+      <a href="https://karwyss.github.io/babskiraj" target="_blank" class="project-card reveal reveal-delay-1" data-cat="gabinet">
+        <div class="card-img">
+          <img src="salonmanicure.png" alt="Salon manicure/pedicure" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-hand-sparkles"></i> Gabinet</div>
+          <h3>Salon manicure/pedicure</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 6 -->
+      <a href="https://karwyss.github.io/kancelaria" target="_blank" class="project-card reveal reveal-delay-2" data-cat="uslugi">
+        <div class="card-img">
+          <img src="kancelaria.png" alt="Kancelaria notarialna" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-scale-balanced"></i> Usługi</div>
+          <h3>Kancelaria notarialna</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 7 -->
+      <a href="https://podologia-frontend.vercel.app" target="_blank" class="project-card reveal" data-cat="gabinet">
+        <div class="card-img">
+          <img src="podologia.png" alt="Gabinet podologiczny" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-stethoscope"></i> Gabinet</div>
+          <h3>Gabinet podologiczny</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> vercel.app</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 8 -->
+      <a href="https://wietnamska-restauracja.vercel.app" target="_blank" class="project-card reveal reveal-delay-1" data-cat="restauracja">
+        <div class="card-img">
+          <img src="wietnamska-restauracja.png" alt="Wietnamska restauracja" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-bowl-rice"></i> Gastronomia</div>
+          <h3>Wietnamska restauracja</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> vercel.app</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 9 -->
+      <a href="https://karwyss.github.io/chatapp" target="_blank" class="project-card reveal reveal-delay-2" data-cat="inne">
+        <div class="card-img">
+          <img src="chatapp.png" alt="Chat App" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-comments"></i> Aplikacja</div>
+          <h3>Chat App</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 10 -->
+      <a href="https://karwyss.github.io/landingpage1" target="_blank" class="project-card reveal" data-cat="uslugi">
+        <div class="card-img">
+          <img src="landingpage.png" alt="Usługi elektryczne" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-bolt"></i> Usługi</div>
+          <h3>Usługi elektryczne</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 11 -->
+      <a href="https://karwyss.github.io/uslugispawalnicze" target="_blank" class="project-card reveal reveal-delay-1" data-cat="uslugi">
+        <div class="card-img">
+          <img src="welder.png" alt="Usługi spawalnicze" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-fire-flame-curved"></i> Usługi</div>
+          <h3>Usługi spawalnicze</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 12 -->
+      <a href="https://karwyss.github.io/hydroinstal" target="_blank" class="project-card reveal reveal-delay-2" data-cat="uslugi">
+        <div class="card-img">
+          <img src="plumber.jpg" alt="Hydroinstalacje" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-faucet"></i> Usługi</div>
+          <h3>Hydroinstalacje</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 13 -->
+      <a href="https://karwyss.github.io/serwissamochodow" target="_blank" class="project-card reveal" data-cat="motoryzacja">
+        <div class="card-img">
+          <img src="mechanic.jpg" alt="Serwis samochodowy" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-wrench"></i> Motoryzacja</div>
+          <h3>Serwis samochodowy</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 14 -->
+      <a href="https://karwyss.github.io/mar-car" target="_blank" class="project-card reveal reveal-delay-1" data-cat="motoryzacja">
+        <div class="card-img">
+          <img src="car-service-detail.jpg" alt="Serwis samochodowy Mar-Car" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-car"></i> Motoryzacja</div>
+          <h3>Serwis samochodowy Mar-Car</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 15 -->
+      <a href="https://karwyss.github.io/meblekleedo" target="_blank" class="project-card reveal reveal-delay-2" data-cat="uslugi">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1600&q=80" alt="Meble Kleedo" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-couch"></i> Sklep / Meble</div>
+          <h3>Meble Kleedo</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 16 -->
+      <a href="https://karwyss.github.io/kac-trans" target="_blank" class="project-card reveal" data-cat="uslugi">
+        <div class="card-img">
+          <img src="kactrans.png" alt="Kac-Trans" loading="lazy" />
+          <div class="card-overlay">
+            <span class="overlay-link"><i class="fas fa-external-link-alt"></i> Zobacz stronę</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag"><i class="fas fa-truck"></i> Transport</div>
+          <h3>Kac-Trans</h3>
+          <div class="card-footer">
+            <span class="card-footer-link"><i class="fas fa-globe"></i> karwyss.github.io</span>
+            <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>
+
+    </div><!-- /projects-grid -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     BOTTOM CTA
+══════════════════════════════════════ -->
+<section id="bottom-cta">
+  <div class="container">
+    <div class="section-label" style="justify-content:center;">Następny w kolejce?</div>
+    <h2>Twoja firma może być <span>tutaj</span></h2>
+    <p>Zadzwoń lub napisz — powiem Ci, co mogę zrobić dla Twojego biznesu i ile to kosztuje.</p>
+    <div class="cta-buttons">
+      <a href="tel:+48000000000" class="btn btn-phone" style="font-size:1rem;padding:16px 34px;">
+        <i class="fas fa-phone"></i> Zadzwoń: +48 000 000 000
+      </a>
+      <a href="https://wa.me/48000000000?text=Cześć%20Karol!%20Chciałbym%20porozmawiać%20o%20stronie%20dla%20mojej%20firmy." target="_blank" class="btn btn-wa" style="font-size:1rem;padding:16px 34px;">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">karol<span>.</span></div>
+      <p>Tworzenie stron i marketing lokalny — Wadowice, Andrychów i okolice</p>
+      <p style="font-size:.78rem;">© 2025 Karol. Wszelkie prawa zastrzeżone.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Navbar scroll ── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  /* ── Burger ── */
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  /* ── Reveal on scroll ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+
+  /* ── Filter ── */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.project-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+      cards.forEach(card => {
+        if (filter === 'all' || card.dataset.cat === filter) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
